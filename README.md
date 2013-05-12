@@ -13,3 +13,15 @@ I package this script with Ocra so that I can share it among the company compute
 Title, IP, and Password (hash) are all stored in a yml in the same directory as the app.
 
 If no config.yml is found, you'll be forced to create one when you first launch the app.
+
+
+Features
+========
+
+Change Channel
+Get Current Channel
+
+========
+
+To enter setup, type 'setup'
+To view info page, type 'info'
