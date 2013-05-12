@@ -23,4 +23,5 @@ Get Current Channel
 
 ========
 To enter setup, type 'setup'
+
 To view info page, type 'info'
