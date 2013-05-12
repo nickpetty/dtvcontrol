@@ -17,11 +17,12 @@ If no config.yml is found, you'll be forced to create one when you first launch 
 
 Features
 ========
-
 Change Channel
+
 Get Current Channel
 
-========
+Other information
+=================
 To enter setup, type 'setup'
 
 To view info page, type 'info'
