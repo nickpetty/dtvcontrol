@@ -21,7 +21,7 @@ Change Channel
 
 Get Current Channel
 
-Other information
+Other Information
 =================
 To enter setup, type 'setup'
 
