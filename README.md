@@ -26,3 +26,35 @@ Other Information
 To enter setup, type 'setup'
 
 To view info page, type 'info'
+
+def help
+  puts 'DTVControl - Help'.yellow
+	puts "==================="
+	puts ""
+	puts " Enter '1' to Change Channel"
+	puts "  Then Enter the number i.e. '206'"
+	puts " 'Wait...' will load, then what is currently playing on that channel" 
+	puts "  will appear"
+	puts "  i.e. 'ESPN - Cowboys vs. Indians"
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter '2' to Get Current Channel and Program"
+	puts "  This will return the current channel and current program showing"
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter '3' to show Favorites"
+	puts "  To add a favorite, type 'add'.  You'll be asked to enter a Channel Number,"
+	puts "  then a Channel Name."
+	puts "  To delete a favorite, type 'del'.  Then enter the Channel Number."
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter 'setup' to enter setup"
+	puts "  Enter '1' to change the IP of the DTV box."
+	puts "  Enter '2' to change the title of the DTVControl"
+	puts "  Enter '3' to show the currenty config.yaml settings"
+	puts "  Enter '4' to change the password"
+	puts " ----------------------------------------------".green
+	puts ""
+	puts "Any other questions should be directed toward the developer."
+	puts ""
+end
