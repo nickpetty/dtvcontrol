@@ -12,7 +12,7 @@ require 'colorize'
 require 'yaml'
 
 def clear
-  system("cls")
+	system("cls")
 	system("clear")
 end
 # Keep screen clean!
@@ -108,7 +108,7 @@ def setup
 	while command != 'q'
 		print "#: "
 		command = gets.chop
-	
+
 		case command
 			when "1"
 				print "Enter IP: "
@@ -142,11 +142,84 @@ def setup
 			else
 				puts "Invalid"
 		end
+		
 		File.open("config.yaml", 'w') do |f|
 			f.write(config_temp.to_yaml)
-			end
+		end
+	end
+end
+
+def favs(arg) # Hash key is callsign and value is channel number
+	
+	favs = {}
+	favs_old = {}
+	
+	if File.file?("favs.yaml")
+		favs_old = YAML.load_file("favs.yaml")
 	end
 
+	passed = arg
+		case passed
+		
+			when "list"
+				if favs_old == nil or favs_old.empty? == true
+					puts "No Favorites.  Use 'add' to add."
+				else
+					favs_old.keys.each do |f|
+						print f
+						print " - "
+						print favs_old[f]
+						puts ''
+					end
+				end
+
+			when "add"
+				print "Enter Channel Number: "
+				number = gets.chop
+				puts ''
+				print "Enter Channel Name: "
+				name = gets.chop
+				puts number + ' - ' + name
+				
+				favs = { number => name}
+				
+				if favs_old.nil? == true
+					new_favs = favs
+				else
+					new_favs = favs.merge(favs_old)
+				end
+
+				File.open("favs.yaml", 'w') do |f|
+					f.write(new_favs.to_yaml)
+				end
+
+			when "del"
+				print "Enter Channel #: "
+				input = gets.chop
+				favs_old.delete(input)
+				
+				File.open("favs.yaml", 'w') do |f|
+					f.write(favs_old.to_yaml)
+				end
+		end
+end
+
+def favs_control
+	input = ''
+	while input != 'q'
+		print '#: '
+		input = gets.chop
+		case input
+			when "add"
+				favs("add")
+			when "list"
+				favs("list")
+			when "del"
+				favs("del")
+			when "q"
+				main
+		end
+	end
 end
 
 def get_channel
@@ -157,9 +230,9 @@ uri = URI('http://' + @ip + ':8080/tv/getTuned')
 		response = JSON.parse(result)
 
 		if response["episodeTitle"] == nil # Not allow programs have an 'episodetitle'.  However, from my experience, all have a 'title' at the least.
-			puts response["callsign"] + ' - ' + response["title"] # Callsign is the channel 'name'
+			puts response["major"].to_s + ': ' + response["callsign"] + ' - ' + response["title"] # Callsign is the channel 'name'
 		else
-			puts response["callsign"] + ' - ' + response["title"] + ': ' + response["episodeTitle"]
+			puts response["major"].to_s + ': ' + response["callsign"] + ' - ' + response["title"] + ': ' + response["episodeTitle"]
 		end
 
 	rescue Errno::ETIMEDOUT => e
@@ -237,12 +310,44 @@ def print_ribbon # This will print '=' as the ribbon surrounding the title the n
 	puts ' '
 end
 
+def help
+	puts 'DTVControl - Help'.yellow
+	puts "==================="
+	puts ""
+	puts " Enter '1' to Change Channel"
+	puts "  Then Enter the number i.e. '206'"
+	puts " 'Wait...' will load, then what is currently playing on that channel" 
+	puts "  will appear"
+	puts "  i.e. 'ESPN - Cowboys vs. Indians"
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter '2' to Get Current Channel and Program"
+	puts "  This will return the current channel and current program showing"
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter '3' to show Favorites"
+	puts "  To add a favorite, type 'add'.  You'll be asked to enter a Channel Number,"
+	puts "  then a Channel Name."
+	puts "  To delete a favorite, type 'del'.  Then enter the Channel Number."
+	puts ""
+	puts " ----------------------------------------------".green
+	puts " Enter 'setup' to enter setup"
+	puts "  Enter '1' to change the IP of the DTV box."
+	puts "  Enter '2' to change the title of the DTVControl"
+	puts "  Enter '3' to show the currenty config.yaml settings"
+	puts "  Enter '4' to change the password"
+	puts " ----------------------------------------------".green
+	puts ""
+	puts "Any other questions should be directed toward the developer."
+	puts ""
+end
 
 def motd
 	puts 'Command List:'
 	puts ''
 	puts '1. Change Channel'
 	puts '2. Get Current Channel'
+	puts '3. Favorites'
 	puts ''
 	puts "Enter 'q' to quit or 'c' to clear"
 end
@@ -260,7 +365,7 @@ def main
 	while command != "q"
 
 		puts ''
-		print 'Command Number (h - for list): '.green
+		print 'Command Number (h - help): '.green
 
 		command = gets.chomp
 		puts ''
@@ -272,13 +377,17 @@ def main
 			when "2"
 				get_channel
 			when "3"
-				get_info
+				favs("list")
+			when "add"
+				favs("add")
+			when "del"
+				favs("del")
 			when "q"
 				q
 			when "debug"
 				debug
 			when "h"
-				motd
+				help
 			when "c"
 				clear
 
@@ -309,7 +418,7 @@ count = 0
 	while count != 4
 		
 		print "Password: "
-		password = gets.chop
+		password = gets
 		crypt_pass(password)
 
 		if @hash_return == @hash
