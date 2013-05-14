@@ -52,7 +52,7 @@ def create_config
 	end
 
 	clear
-	main
+	get_pass
 end
 
 def load_config
@@ -148,6 +148,8 @@ def setup
 		end
 	end
 end
+
+
 
 def favs(arg) # Hash key is callsign and value is channel number
 	
