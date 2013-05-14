@@ -59,5 +59,5 @@ DTVControl - Help
 
 Known Issues
 ============
-Deleting the config.yaml or removing the hash from the config brings user to setup then circumvents the password prompt.
+FIXED: ~~Deleting the config.yaml or removing the hash from the config brings user to setup then circumvents the password prompt.~~
 
