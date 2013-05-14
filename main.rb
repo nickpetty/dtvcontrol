@@ -257,41 +257,44 @@ end
 def tune
 print 'Enter Channel Number: '
 chan = gets
-uri = URI('http://' + @ip + ':8080/tv/tune?major=' + chan)
+	if chan == ''
+		puts 'You did not enter a valid channel'	
+	else
+		uri = URI('http://' + @ip + ':8080/tv/tune?major=' + chan)
 
-	begin
-		result = Net::HTTP.get(uri)
-		response = JSON.parse(result)
-		parse = response["status"]
-		message = parse["msg"]
+		begin
+			result = Net::HTTP.get(uri)
+			response = JSON.parse(result)
+			parse = response["status"]
+			message = parse["msg"]
 		
-		if message == 'OK.'
-			print "Wait"  #Waits for 3 seconds while box turns channel.  If get_channel is called while the box is turning channels, program crashes.
-			sleep 1
-			print "."
-			sleep 1
-			print "."
-			sleep 0.5
-			print "."
-			sleep 0.5
-			puts ''
-			get_channel
-		else
-			puts "Something went wrong..."
-			puts "Response Message: ", message
-			puts "See full JSON Response? y or n"
-			answer = gets
+			if message == 'OK.'
+				print "Wait"  #Waits for 3 seconds while box turns channel.  If get_channel is called while the box is turning channels, program crashes.
+				sleep 1
+				print "."
+				sleep 1
+				print "."
+				sleep 0.5
+				print "."
+				sleep 0.5
+				puts ''
+				get_channel
+			else
+				puts "Something went wrong..."
+				puts "Response Message: ", message
+				puts "See full JSON Response? y or n"
+				answer = gets
 			
-			if answer == "y"
-				puts result
+				if answer == "y"
+					puts result
+				end
 			end
+
+		rescue Errno::ETIMEDOUT => e # Only resucing on timeout as the computers at my workplace are on Active Directory.  If a computer is not connected to the network, you can't log in.
+			puts ''
+			puts "Can't Connect".red
 		end
-
-	rescue Errno::ETIMEDOUT => e # Only resucing on timeout as the computers at my workplace are on Active Directory.  If a computer is not connected to the network, you can't log in.
-		puts ''
-		puts "Can't Connect".red
 	end
-
 end
 
 def q # Clears screen then quits
