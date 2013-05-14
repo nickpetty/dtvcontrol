@@ -10,7 +10,7 @@ require 'rubygems'
 require 'json'
 require 'colorize'
 require 'yaml'
-
+@ver = 'RC1'
 def clear
 	system("cls")
 	system("clear")
@@ -179,20 +179,24 @@ def favs(arg) # Hash key is callsign and value is channel number
 				puts ''
 				print "Enter Channel Name: "
 				name = gets.chop
-				puts number + ' - ' + name
 				
-				favs = { number => name}
-				
-				if favs_old.nil? == true
-					new_favs = favs
+				if number == '' or name == ''
+					puts "You did not enter a name/channel"
 				else
-					new_favs = favs.merge(favs_old)
-				end
+					puts "Saved " + number + ' - ' + name
+					favs = { number => name}
+				
+					if favs_old.nil? == true
+						new_favs = favs
+					else
+						new_favs = favs.merge(favs_old)
+					end
 
-				File.open("favs.yaml", 'w') do |f|
-					f.write(new_favs.to_yaml)
+					File.open("favs.yaml", 'w') do |f|
+						f.write(new_favs.to_yaml)
+					end
 				end
-
+					
 			when "del"
 				print "Enter Channel #: "
 				input = gets.chop
@@ -244,9 +248,10 @@ end
 def info
 	puts "Written and Developed by Nicholas M. Petty"
 	puts "ihackeverything.com - Creative Commons 2013"
-	puts "Written in Ruby"
+	puts "Written in Ruby" 
 	puts "--------------------------------------------"
 	puts "Current DTV Box IP: " + @ip
+	puts "version " + @ver
 end
 
 def tune
