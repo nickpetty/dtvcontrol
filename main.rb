@@ -198,6 +198,7 @@ def favs(arg) # Hash key is callsign and value is channel number
 						File.open("config.yaml", 'w') do |f|
 							f.write(n.to_yaml)
 						end
+						puts "Favorite Added - " + number + ': ' + name
 					else
 						favs_old[number] = name
 
@@ -206,20 +207,34 @@ def favs(arg) # Hash key is callsign and value is channel number
 						File.open("config.yaml", 'w') do |f|
 							f.write(n.to_yaml)
 						end
+						puts "Favorite Added - " + number + ': ' + name
 					end
-
-					
-					
-					puts favs_old
 				end
-					
 			when "del"
 				print "Enter Channel #: "
 				input = gets.chop
-				favs_old.delete(input)
-				n = {"config" => config, "Favorites" => favs_old}
-				File.open("config.yaml", 'a') do |f|
-					f.write(n.to_yaml)
+
+				if input == ''
+					puts "You did not enter a channel"
+				else
+					fav_chans = []
+					
+					favs_old.keys.each do |k|
+						fav_chans << k
+					end
+					
+					if  fav_chans.include?(input)
+						favs_old.delete(input)
+					
+						n = {"config" => config, "Favorites" => favs_old}
+					
+						File.open("config.yaml", 'w') do |f|
+							f.write(n.to_yaml)
+						end
+						puts "Favorite " + input + " Deleted."
+					else
+						puts "Channel not in Favorites."
+					end
 				end
 		end
 end
