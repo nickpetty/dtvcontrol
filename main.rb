@@ -64,9 +64,10 @@ def load_config
 	config = YAML.load_file("config.yaml")
 	if config["hash"] == nil
 		clear
-		puts "No password is set.".red
-		puts "Please choose option 4 in setup to create a password".red
-		setup
+		puts "Configuration file is corrupt.  Please manually delete config.yaml"
+		Puts "Press Enter to exit..."
+		a = gets
+		exit
 	end
 
 	if config["ip"] == nil
