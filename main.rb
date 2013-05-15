@@ -438,7 +438,7 @@ load_config
 
 count = 0
 	puts "========================="
-	puts "AUTHORIZED PERSONEL ONLY".red
+	puts "AUTHORIZED PERSONNEL ONLY".red
 	puts "========================="
 	while count != 4
 		
