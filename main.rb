@@ -65,7 +65,7 @@ def load_config
 	if config["hash"] == nil
 		clear
 		puts "Configuration file is corrupt.  Please manually delete config.yaml"
-		Puts "Press Enter to exit..."
+		puts "Press Enter to exit..."
 		a = gets
 		exit
 	end
