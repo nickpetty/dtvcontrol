@@ -47,8 +47,10 @@ def create_config
 	crypt_pass(password)
 	config["hash"] = @hash_return
 
+	n = {"config" => {"ip" => ip, "title" => title, "hash" => @hash_return}}
+	
 	File.open("config.yaml", 'w') do |f|
-		f.write(config.to_yaml)
+		f.write(n.to_yaml)
 	end
 
 	clear
@@ -62,7 +64,7 @@ def load_config
 	end
 	
 	config = YAML.load_file("config.yaml")
-	if config["hash"] == nil
+	if config["config"]["hash"] == nil
 		clear
 		puts "Configuration file is corrupt.  Please manually delete config.yaml"
 		puts "Press Enter to exit..."
@@ -70,15 +72,15 @@ def load_config
 		exit
 	end
 
-	if config["ip"] == nil
+	if config["config"]["ip"] == nil
 		clear
 		puts "No IP found".red
 		setup
 	end
 	
-	@ip = config["ip"]
-	@title = config["title"]
-	@hash = config["hash"]
+	@ip = config["config"]["ip"]
+	@title = config["config"]["title"]
+	@hash = config["config"]["hash"]
 end
 
 def clear
@@ -92,10 +94,10 @@ def setup
 	config_file = YAML.load_file("config.yaml")
 	
 	# Load in current config
-
-	config_temp["ip"] = config_file["ip"]
-	config_temp["title"] = config_file["title"]
-	config_temp["hash"] = config_file["hash"]
+	favs = config_file["Favorites"]
+	config_temp["ip"] = config_file["config"]["ip"]
+	config_temp["title"] = config_file["config"]["title"]
+	config_temp["hash"] = config_file["config"]["hash"]
 	
 	command = ''
 	puts "DTVControl - Setup"
@@ -126,8 +128,8 @@ def setup
 				puts ''
 
 			when "3"
-				puts "IP: " + config_file["ip"].yellow
-				puts "Title: " + config_file["title"].yellow
+				puts "IP: " + config_temp["ip"].yellow
+				puts "Title: " + config_temp["title"].yellow
 				puts ''
 
 			when "4"
@@ -143,9 +145,9 @@ def setup
 			else
 				puts "Invalid"
 		end
-		
+		n = {"config" => config_temp, "Favorites" => favs}
 		File.open("config.yaml", 'w') do |f|
-			f.write(config_temp.to_yaml)
+			f.write(n.to_yaml)
 		end
 	end
 end
@@ -157,9 +159,10 @@ def favs(arg) # Hash key is callsign and value is channel number
 	favs = {}
 	favs_old = {}
 	
-	if File.file?("favs.yaml")
-		favs_old = YAML.load_file("favs.yaml")
-	end
+	
+	load = YAML.load_file("config.yaml")
+	config = load["config"]
+	favs_old = load["Favorites"]
 
 	passed = arg
 		case passed
@@ -186,27 +189,37 @@ def favs(arg) # Hash key is callsign and value is channel number
 				if number == '' or name == ''
 					puts "You did not enter a name/channel"
 				else
-					puts "Saved " + number + ' - ' + name
-					favs = { number => name}
 				
 					if favs_old.nil? == true
-						new_favs = favs
+						new_fav = {number => name}
+
+						n = {"config" => config, "Favorites" => new_fav}
+
+						File.open("config.yaml", 'w') do |f|
+							f.write(n.to_yaml)
+						end
 					else
-						new_favs = favs.merge(favs_old)
+						favs_old[number] = name
+
+						n = {"config" => config, "Favorites" => favs_old}
+
+						File.open("config.yaml", 'w') do |f|
+							f.write(n.to_yaml)
+						end
 					end
 
-					File.open("favs.yaml", 'w') do |f|
-						f.write(new_favs.to_yaml)
-					end
+					
+					
+					puts favs_old
 				end
 					
 			when "del"
 				print "Enter Channel #: "
 				input = gets.chop
 				favs_old.delete(input)
-				
-				File.open("favs.yaml", 'w') do |f|
-					f.write(favs_old.to_yaml)
+				n = {"config" => config, "Favorites" => favs_old}
+				File.open("favs.yaml", 'a') do |f|
+					f.write(n.to_yaml)
 				end
 		end
 end
