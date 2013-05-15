@@ -250,8 +250,9 @@ end
 
 def info
 	puts "Written and Developed by Nicholas M. Petty"
-	puts "ihackeverything.com - Creative Commons 2013"
+	puts "ihackeverything.com - GNU GPL 2013"
 	puts "Written in Ruby" 
+	puts "Source available at https://github.com/nickpetty/dtvcontrol"
 	puts "--------------------------------------------"
 	puts "Current DTV Box IP: " + @ip
 	puts "version " + @ver
