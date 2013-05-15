@@ -218,7 +218,7 @@ def favs(arg) # Hash key is callsign and value is channel number
 				input = gets.chop
 				favs_old.delete(input)
 				n = {"config" => config, "Favorites" => favs_old}
-				File.open("favs.yaml", 'a') do |f|
+				File.open("config.yaml", 'a') do |f|
 					f.write(n.to_yaml)
 				end
 		end
